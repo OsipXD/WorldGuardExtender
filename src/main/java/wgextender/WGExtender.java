@@ -46,6 +46,7 @@ import wgextender.features.regionprotect.regionbased.Pistons;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import wgextender.utils.VersionUtils;
 
 public class WGExtender extends JavaPlugin {
 
@@ -75,7 +76,7 @@ public class WGExtender extends JavaPlugin {
 		log = getLogger();
 		we = JavaPlugin.getPlugin(WorldEditPlugin.class);
 		wg = JavaPlugin.getPlugin(WorldGuardPlugin.class);
-		ChorusFruitUseFlag.assignInstance();
+
 		OldPVPAttackSpeedFlag.assignInstance();
 		OldPVPNoShieldBlockFlag.assignInstance();
 		OldPVPNoBowFlag.assignInstance();
@@ -91,11 +92,20 @@ public class WGExtender extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new EntityExplode(config), this);
 		getServer().getPluginManager().registerEvents(new BlockExplode(config), this);
 		getServer().getPluginManager().registerEvents(new WEWandListener(), this);
-		getServer().getPluginManager().registerEvents(new ChorusFruitFlagHandler(), this);
+
+		if (VersionUtils.isMC19OrNewer()) {
+			ChorusFruitUseFlag.assignInstance();
+			getServer().getPluginManager().registerEvents(new ChorusFruitFlagHandler(), this);
+		}
+
 		try {
 			WGRegionCommandWrapper.inject(config);
 			WEWandCommandWrapper.inject(config);
-			FlagRegistration.registerFlag(ChorusFruitUseFlag.getInstance());
+
+			if (VersionUtils.isMC19OrNewer()) {
+				FlagRegistration.registerFlag(ChorusFruitUseFlag.getInstance());
+			}
+
 			FlagRegistration.registerFlag(OldPVPAttackSpeedFlag.getInstance());
 			FlagRegistration.registerFlag(OldPVPNoShieldBlockFlag.getInstance());
 			FlagRegistration.registerFlag(OldPVPNoBowFlag.getInstance());

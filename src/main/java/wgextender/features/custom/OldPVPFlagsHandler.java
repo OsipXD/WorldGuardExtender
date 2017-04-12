@@ -24,11 +24,13 @@ import org.bukkit.inventory.EquipmentSlot;
 
 import com.google.common.base.Function;
 
+import org.bukkit.inventory.ItemStack;
 import wgextender.WGExtender;
 import wgextender.features.flags.OldPVPAttackSpeedFlag;
 import wgextender.features.flags.OldPVPNoBowFlag;
 import wgextender.features.flags.OldPVPNoShieldBlockFlag;
 import wgextender.utils.ReflectionUtils;
+import wgextender.utils.VersionUtils;
 import wgextender.utils.WGRegionUtils;
 
 public class OldPVPFlagsHandler implements Listener {
@@ -108,7 +110,17 @@ public class OldPVPFlagsHandler implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onInteract(PlayerInteractEvent event) {
-		if (event.getHand() == EquipmentSlot.OFF_HAND && event.getPlayer().getInventory().getItemInOffHand().getType() == Material.BOW) {
+		ItemStack itemInHand;
+		if (!VersionUtils.isMC19OrNewer()) {
+			//noinspection deprecation
+			itemInHand = event.getPlayer().getInventory().getItemInHand();
+		} else if (event.getHand() == EquipmentSlot.OFF_HAND) {
+			itemInHand = event.getPlayer().getInventory().getItemInOffHand();
+		} else {
+			itemInHand = new ItemStack(Material.AIR);
+		}
+
+		if (itemInHand.getType() == Material.BOW) {
 			if (WGRegionUtils.isFlagTrue(event.getPlayer().getLocation(), OldPVPNoBowFlag.getInstance())) {
 				event.setCancelled(true);
 			}
