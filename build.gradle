@@ -35,6 +35,10 @@ repositories {
     }
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 dependencies {
     provided(group: 'net.milkbowl.vault', name: 'VaultAPI', version: "$vaultVersion") {
         exclude group: 'org.bukkit'

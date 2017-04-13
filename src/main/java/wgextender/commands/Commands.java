@@ -17,23 +17,20 @@ q * This program is free software; you can redistribute it and/or
 
 package wgextender.commands;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
+import com.sk89q.minecraft.util.commands.CommandException;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.domains.DefaultDomain;
+import com.sk89q.worldguard.protection.flags.*;
+import com.sk89q.worldguard.protection.flags.StateFlag.State;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.RemoteConsoleCommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
-
 import wgextender.Config;
 import wgextender.WGExtender;
 import wgextender.commands.RegionsInAreaSearch.NoSelectionException;
@@ -41,19 +38,10 @@ import wgextender.features.claimcommand.AutoFlags;
 import wgextender.utils.StringUtils;
 import wgextender.utils.Transform;
 
-import com.sk89q.minecraft.util.commands.CommandException;
-import com.sk89q.worldguard.bukkit.RegionContainer;
-import com.sk89q.worldguard.domains.DefaultDomain;
-import com.sk89q.worldguard.protection.flags.BooleanFlag;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.EnumFlag;
-import com.sk89q.worldguard.protection.flags.Flag;
-import com.sk89q.worldguard.protection.flags.InvalidFlagFormat;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.flags.StateFlag.State;
-import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 public class Commands implements CommandExecutor, TabCompleter {
 
@@ -67,7 +55,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String label, String[] args) {
 		if (!canExecute(sender)) {
-			sender.sendMessage(ChatColor.RED+"Недостаточно прав");
+			sender.sendMessage(ChatColor.RED + "Недостаточно прав");
 			return true;
 		}
 		if (args.length >= 1) {

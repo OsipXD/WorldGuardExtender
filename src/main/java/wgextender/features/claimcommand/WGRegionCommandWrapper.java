@@ -17,40 +17,36 @@
 
 package wgextender.features.claimcommand;
 
-import java.lang.reflect.InvocationTargetException;
-
+import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.sk89q.minecraft.util.commands.CommandException;
-
 import wgextender.Config;
 import wgextender.features.claimcommand.BlockLimits.ProcessedClaimInfo;
 import wgextender.utils.CommandUtils;
 import wgextender.utils.WEUtils;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class WGRegionCommandWrapper extends Command {
+	private Config config;
+	private Command originalCommand;
 
 	public static void inject(Config config) throws NoSuchFieldException, SecurityException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		WGRegionCommandWrapper wrapper = new WGRegionCommandWrapper(config, CommandUtils.getCommands().get("region"));
-		CommandUtils.replaceComamnd(wrapper.originalcommand, wrapper);
+		CommandUtils.replaceComamnd(wrapper.originalCommand, wrapper);
 	}
 
 	public static void uninject() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException, SecurityException, NoSuchMethodException {
 		WGRegionCommandWrapper wrapper = (WGRegionCommandWrapper) CommandUtils.getCommands().get("region");
-		CommandUtils.replaceComamnd(wrapper, wrapper.originalcommand);
+		CommandUtils.replaceComamnd(wrapper, wrapper.originalCommand);
 	}
 
-
-	private Config config;
-	private Command originalcommand;
-
-	private WGRegionCommandWrapper(Config config, Command originalcommand) {
-		super(originalcommand.getName(), originalcommand.getDescription(), originalcommand.getUsage(), originalcommand.getAliases());
+	private WGRegionCommandWrapper(Config config, Command originalCommand) {
+		super(originalCommand.getName(), originalCommand.getDescription(), originalCommand.getUsage(), originalCommand.getAliases());
 		this.config = config;
-		this.originalcommand = originalcommand;
+		this.originalCommand = originalCommand;
 	}
 
 	private final BlockLimits blocklimits = new BlockLimits();
@@ -59,13 +55,14 @@ public class WGRegionCommandWrapper extends Command {
 	public boolean execute(CommandSender sender, String label, String[] args) {
 		if (sender instanceof Player && args.length >= 2 && args[0].equalsIgnoreCase("claim")) {
 			Player player = (Player) sender;
-			String regionname = args[1];
+			String regionName = args[1];
 			if (config.expandByVertical) {
 				boolean result = WEUtils.expandVert((Player) sender);
 				if (result) {
 					player.sendMessage(ChatColor.YELLOW + "Регион автоматически расширен по вертикали");
 				}
 			}
+
 			ProcessedClaimInfo info = blocklimits.processClaimInfo(config, player);
 			if (!info.isClaimAllowed()) {
 				player.sendMessage(ChatColor.RED + "Вы не можете заприватить такой большой регион");
@@ -74,18 +71,20 @@ public class WGRegionCommandWrapper extends Command {
 				}
 				return true;
 			}
-			boolean hasRegion = AutoFlags.hasRegion(player.getWorld(), regionname);
+
+			boolean hasRegion = AutoFlags.hasRegion(player.getWorld(), regionName);
 			try {
-				WEClaimCommand.claim(regionname, sender);
+				WEClaimCommand.claim(regionName, sender);
 				if (!hasRegion && config.autoFlagsEnabled) {
-					AutoFlags.setFlagsForRegion(player.getWorld(), config, regionname);
+					AutoFlags.setFlagsForRegion(player.getWorld(), config, regionName);
 				}
 			} catch (CommandException ex) {
 				sender.sendMessage(ChatColor.RED + ex.getMessage());
 			}
+
 			return true;
 		} else {
-			return originalcommand.execute(sender, label, args);
+			return originalCommand.execute(sender, label, args);
 		}
 	}
 
