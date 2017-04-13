@@ -41,22 +41,25 @@ public class OldPVPFlagsHandler implements Listener {
 	public void start() throws NoSuchFieldException, SecurityException {
 		functionsField = ReflectionUtils.getField(EntityDamageEvent.class, "modifierFunctions");
 		Bukkit.getPluginManager().registerEvents(this, WGExtender.getInstance());
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(WGExtender.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					if (WGRegionUtils.isFlagTrue(player.getLocation(), OldPVPAttackSpeedFlag.getInstance())) {
-						if (!oldValues.containsKey(player.getUniqueId())) {
-							AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
-							oldValues.put(player.getUniqueId(), attribute.getBaseValue());
-							attribute.setBaseValue(16.0);
+
+		if (VersionUtils.isMC19OrNewer()) {
+			Bukkit.getScheduler().scheduleSyncRepeatingTask(WGExtender.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						if (WGRegionUtils.isFlagTrue(player.getLocation(), OldPVPAttackSpeedFlag.getInstance())) {
+							if (!oldValues.containsKey(player.getUniqueId())) {
+								AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+								oldValues.put(player.getUniqueId(), attribute.getBaseValue());
+								attribute.setBaseValue(16.0);
+							}
+						} else {
+							reset(player);
 						}
-					} else {
-						reset(player);
 					}
 				}
-			}
-		}, 0, 1);
+			}, 0, 1);
+		}
 	}
 
 	public void stop() {
@@ -71,6 +74,10 @@ public class OldPVPFlagsHandler implements Listener {
 	}
 
 	private void reset(Player player) {
+		if (!VersionUtils.isMC19OrNewer()) {
+			return;
+		}
+
 		Double oldValue = oldValues.remove(player.getUniqueId());
 		if (oldValue != null) {
 			player.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(oldValue);

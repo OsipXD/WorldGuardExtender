@@ -67,8 +67,8 @@ public class WGExtender extends JavaPlugin {
 		return wg;
 	}
 
-	private PvPHandlingListener pvplistener;
-	private OldPVPFlagsHandler oldpvphandler;
+	private PvPHandlingListener pvpListener;
+	private OldPVPFlagsHandler oldPvpHandler;
 
 	@Override
 	public void onEnable() {
@@ -77,8 +77,6 @@ public class WGExtender extends JavaPlugin {
 		we = JavaPlugin.getPlugin(WorldEditPlugin.class);
 		wg = JavaPlugin.getPlugin(WorldGuardPlugin.class);
 
-		OldPVPAttackSpeedFlag.assignInstance();
-		OldPVPNoShieldBlockFlag.assignInstance();
 		OldPVPNoBowFlag.assignInstance();
 		Config config = new Config(this);
 		config.loadConfig();
@@ -93,7 +91,10 @@ public class WGExtender extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new BlockExplode(config), this);
 		getServer().getPluginManager().registerEvents(new WEWandListener(), this);
 
+		// Flags for new versions
 		if (VersionUtils.isMC19OrNewer()) {
+			OldPVPAttackSpeedFlag.assignInstance();
+			OldPVPNoShieldBlockFlag.assignInstance();
 			ChorusFruitUseFlag.assignInstance();
 			getServer().getPluginManager().registerEvents(new ChorusFruitFlagHandler(), this);
 		}
@@ -104,17 +105,17 @@ public class WGExtender extends JavaPlugin {
 
 			if (VersionUtils.isMC19OrNewer()) {
 				FlagRegistration.registerFlag(ChorusFruitUseFlag.getInstance());
+				FlagRegistration.registerFlag(OldPVPAttackSpeedFlag.getInstance());
+				FlagRegistration.registerFlag(OldPVPNoShieldBlockFlag.getInstance());
 			}
 
-			FlagRegistration.registerFlag(OldPVPAttackSpeedFlag.getInstance());
-			FlagRegistration.registerFlag(OldPVPNoShieldBlockFlag.getInstance());
 			FlagRegistration.registerFlag(OldPVPNoBowFlag.getInstance());
-			pvplistener = new PvPHandlingListener(config);
-			pvplistener.inject();
-			oldpvphandler = new OldPVPFlagsHandler();
-			oldpvphandler.start();
+			pvpListener = new PvPHandlingListener(config);
+			pvpListener.inject();
+			oldPvpHandler = new OldPVPFlagsHandler();
+			oldPvpHandler.start();
 		} catch (Throwable t) {
-			log(Level.SEVERE, "Unable to inject, shutting down");
+			severe("Unable to inject, shutting down");
 			t.printStackTrace();
 			Bukkit.shutdown();
 		}
@@ -125,10 +126,10 @@ public class WGExtender extends JavaPlugin {
 		try {
 			WEWandCommandWrapper.uninject();
 			WGRegionCommandWrapper.uninject();
-			pvplistener.uninject();
-			oldpvphandler.stop();
+			pvpListener.uninject();
+			oldPvpHandler.stop();
 		} catch (Throwable t) {
-			log(Level.SEVERE, "Unable to uninject, shutting down");
+			severe("Unable to uninject, shutting down");
 			t.printStackTrace();
 			Bukkit.shutdown();
 		}
@@ -137,7 +138,7 @@ public class WGExtender extends JavaPlugin {
 		instance = null;
 	}
 
-	public static void log(Level level, String message) {
+	public static void severe(String message) {
 		if (log != null) {
 			log.log(Level.SEVERE, message);
 		}

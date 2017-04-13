@@ -38,14 +38,14 @@ public class Pistons implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onExtend(BlockPistonExtendEvent event) {
-		if (!config.blockpistonmoveblock) {
+		if (!config.blockPistonMoveBlock) {
 			return;
 		}
-		Location pistonlocation = event.getBlock().getLocation();
+		Location pistonLocation = event.getBlock().getLocation();
 		for (Block block : event.getBlocks()) {
 			if (
-				!WGRegionUtils.isInTheSameRegionOrWild(pistonlocation, block.getLocation()) ||
-				!WGRegionUtils.isInTheSameRegionOrWild(pistonlocation, block.getRelative(event.getDirection()).getLocation())
+				!WGRegionUtils.isInTheSameRegionOrWild(pistonLocation, block.getLocation()) ||
+				!WGRegionUtils.isInTheSameRegionOrWild(pistonLocation, block.getRelative(event.getDirection()).getLocation())
 			) {
 				event.setCancelled(true);
 				break;
@@ -58,17 +58,17 @@ public class Pistons implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onRetract(BlockPistonRetractEvent event) {
-		if (!config.blockpistonmoveblock) {
+		if (!config.blockPistonMoveBlock) {
 			return;
 		}
-		Location pistonlocation = event.getBlock().getLocation();
+		Location pistonLocation = event.getBlock().getLocation();
 		if (event.isSticky()) {
 			if (isSlimeRetractAvailable) {
 				try {
 					for (Block block : event.getBlocks()) {
 						if (
-							!WGRegionUtils.isInTheSameRegionOrWild(pistonlocation, block.getLocation()) ||
-							!WGRegionUtils.isInTheSameRegionOrWild(pistonlocation, block.getRelative(event.getDirection()).getLocation())
+							!WGRegionUtils.isInTheSameRegionOrWild(pistonLocation, block.getLocation()) ||
+							!WGRegionUtils.isInTheSameRegionOrWild(pistonLocation, block.getRelative(event.getDirection()).getLocation())
 						) {
 							event.setCancelled(true);
 							break;
