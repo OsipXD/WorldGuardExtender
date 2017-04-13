@@ -70,13 +70,11 @@ public class OldPVPFlagsHandler implements Listener {
 	}
 
 	private void reset(Player player) {
-		if (!VersionUtils.isMC19OrNewer()) {
-			return;
-		}
-
-		Double oldValue = oldValues.remove(player.getUniqueId());
-		if (oldValue != null) {
-			player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_ATTACK_SPEED).setBaseValue(oldValue);
+		if (VersionUtils.isMC19OrNewer()) {
+            Double oldValue = oldValues.remove(player.getUniqueId());
+            if (oldValue != null) {
+                player.getAttribute(org.bukkit.attribute.Attribute.GENERIC_ATTACK_SPEED).setBaseValue(oldValue);
+            }
 		}
 	}
 
