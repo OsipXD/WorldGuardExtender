@@ -39,8 +39,10 @@ dependencies {
     provided(group: 'net.milkbowl.vault', name: 'VaultAPI', version: "$vaultVersion") {
         exclude group: 'org.bukkit'
     }
-    provided group: 'org.bukkit', name: 'bukkit', version: "$bukkitVersion-R0.1-SNAPSHOT"
     provided group: 'com.sk89q.worldguard', name: 'worldguard-legacy', version : "$wgVersion"
     provided group: 'com.sk89q.worldedit', name: 'worldedit-core', version : "$weVersion"
-    provided group: 'com.sk89q.worldedit', name: 'worldedit-bukkit', version : "$weVersion"
+    provided(group: 'com.sk89q.worldedit', name: 'worldedit-bukkit', version : "$weVersion") {
+        exclude group: 'org.bukkit'
+    }
+    provided group: 'org.bukkit', name: 'bukkit', version: "$bukkitVersion-R0.1-SNAPSHOT"
 }
