@@ -17,36 +17,25 @@
 
 package wgextender;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import wgextender.commands.Commands;
 import wgextender.features.claimcommand.WGRegionCommandWrapper;
 import wgextender.features.custom.OldPVPFlagsHandler;
 import wgextender.features.extendedwand.WEWandCommandWrapper;
 import wgextender.features.extendedwand.WEWandListener;
-import wgextender.features.flags.ChorusFruitUseFlag;
-import wgextender.features.flags.FlagRegistration;
-import wgextender.features.flags.OldPVPAttackSpeedFlag;
-import wgextender.features.flags.OldPVPNoBowFlag;
-import wgextender.features.flags.OldPVPNoShieldBlockFlag;
+import wgextender.features.flags.*;
 import wgextender.features.regionprotect.ownormembased.ChorusFruitFlagHandler;
 import wgextender.features.regionprotect.ownormembased.IgniteByPlayer;
 import wgextender.features.regionprotect.ownormembased.PvPHandlingListener;
 import wgextender.features.regionprotect.ownormembased.RestrictCommands;
-import wgextender.features.regionprotect.regionbased.BlockBurn;
-import wgextender.features.regionprotect.regionbased.BlockExplode;
-import wgextender.features.regionprotect.regionbased.EntityExplode;
-import wgextender.features.regionprotect.regionbased.FireSpread;
-import wgextender.features.regionprotect.regionbased.LiquidFlow;
-import wgextender.features.regionprotect.regionbased.Pistons;
-
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import wgextender.features.regionprotect.regionbased.*;
 import wgextender.utils.VersionUtils;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WGExtender extends JavaPlugin {
 
@@ -88,10 +77,13 @@ public class WGExtender extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new BlockBurn(config), this);
 		getServer().getPluginManager().registerEvents(new Pistons(config), this);
 		getServer().getPluginManager().registerEvents(new EntityExplode(config), this);
-		getServer().getPluginManager().registerEvents(new BlockExplode(config), this);
 		getServer().getPluginManager().registerEvents(new WEWandListener(), this);
 
 		// Flags for new versions
+		if (VersionUtils.isMC183OrNewer()) {
+			getServer().getPluginManager().registerEvents(new BlockExplode(config), this);
+		}
+
 		if (VersionUtils.isMC19OrNewer()) {
 			OldPVPAttackSpeedFlag.assignInstance();
 			OldPVPNoShieldBlockFlag.assignInstance();

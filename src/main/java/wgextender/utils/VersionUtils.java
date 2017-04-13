@@ -28,11 +28,23 @@ public class VersionUtils {
         return Bukkit.getBukkitVersion().contains("1.8");
     }
 
+    private static boolean isMC183(){
+        return Bukkit.getBukkitVersion().contains("1.8.3");
+    }
+
     private static boolean isMC17(){
         return Bukkit.getBukkitVersion().contains("1.7");
     }
 
     public static boolean isMC19OrNewer(){
         return isMC19() || !isMC18() && !isMC17();
+    }
+
+    public static boolean isMC18OrNewer(){
+        return isMC18() || !isMC17();
+    }
+
+    public static boolean isMC183OrNewer(){
+        return isMC183() || !isMC18() && !isMC17();
     }
 }

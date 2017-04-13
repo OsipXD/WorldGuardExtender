@@ -24,12 +24,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
-
 import wgextender.Config;
+import wgextender.utils.VersionUtils;
 import wgextender.utils.WGRegionUtils;
 
 public class Pistons implements Listener {
-
+	private boolean isSlimeRetractAvailable = VersionUtils.isMC18OrNewer();
 	private Config config;
 
 	public Pistons(Config config) {
@@ -52,8 +52,6 @@ public class Pistons implements Listener {
 			}
 		}
 	}
-
-	private boolean isSlimeRetractAvailable = true;
 
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
