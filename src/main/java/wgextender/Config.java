@@ -17,22 +17,16 @@
 
 package wgextender;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flag;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.Flag;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class Config {
 
@@ -80,7 +74,7 @@ public class Config {
 
 		expandByVertical = config.getBoolean("claim.vertexpand.enabled", expandByVertical);
 
-		blockLimitsEnabled = config.getBoolean("claim.blockLimits.enabled", blockLimitsEnabled);
+		blockLimitsEnabled = config.getBoolean("claim.blocklimits.enabled", blockLimitsEnabled);
 		blockLimits.clear();
 		ConfigurationSection blimitscs = config.getConfigurationSection("claim.blocklimits.limits");
 		if (blimitscs != null) {
@@ -137,7 +131,7 @@ public class Config {
 			config.createSection("claim.blocklimits.limits");
 		}
 		for (Entry<String, Integer> entry : blockLimits.entrySet()) {
-			config.set("claim.blockLimits.limits." + entry.getKey(), entry.getValue());
+			config.set("claim.blocklimits.limits." + entry.getKey(), entry.getValue());
 		}
 
 		config.set("regionprotect.flow.lava.enabled", blockLavaFlow);
